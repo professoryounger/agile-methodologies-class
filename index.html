@@ -152,6 +152,37 @@ broad selectors -->
   		font-size: 18px;
   		animation: snow 10s linear infinite;
 		}
+     /* Landon Morrical - theme switcher */
+    #decoration1 {
+      position: absolute; 
+      top: 10px; 
+      right: 10px; 
+      font-size: 24px;
+    }
+    #decoration2 {
+      position: absolute; 
+      top: 10px; 
+      left: 10px; 
+      font-size: 24px;
+    }
+    #decoration3 {
+      position: absolute; 
+      top: 10px; 
+      right: 350px; 
+      font-size: 24px;
+    }
+    #themeswitcher {
+      position: absolute; 
+      bottom: 5px;
+      right: 5px;
+      color: black;
+      background-color: #ffffff;
+      border-radius: 40px;
+      border: 2px solid #000000;
+    }
+    #themeswitcher:hover {
+      background-color: #ffffff;
+    }
     /* EVAN BOWER - audio player */
 		.audio-player {
       position: fixed;
@@ -197,8 +228,48 @@ broad selectors -->
 	<div class="snowflake" style="left: 40%; top: -6%">❄️</div>
   <div class="snowflake" style="left: 60%; top: -13%">❄️</div>
   <div class="snowflake" style="left: 80%; top: -4%">❄️</div>
-	<div style="position: absolute; top: 10px; right: 10px; font-size: 24px;">🎁</div>
-	<div style="position: absolute; top: 10px; left: 10px; font-size: 24px;">🎄</div>
+  <div id="decoration1">🎁</div>
+	<div id="decoration2">🎄</div>
+  <!-- Jacob Diedrich - snowman :) -->
+	<div id="decoration3">☃️</div>
+
+
+  <!-- Landon Morrical - theme switcher -->
+  <button id="themeswitcher">Theme: Christmas</div>
+
+  <script>
+  //Landon Morrical - Theme Switcher
+    var currentTheme = "Christmas"
+    document.getElementById(`themeswitcher`).addEventListener(`click`, function () {
+      if (currentTheme === "Christmas") {
+        currentTheme = "None"
+        document.getElementById(`themeswitcher`).innerHTML = "Theme: None"
+        const snowflakes = document.getElementsByClassName("snowflake");
+        for (let i = 0; i < snowflakes.length; i++) {
+          snowflakes.item(i).innerHTML = " "
+        }
+        document.getElementById(`decoration1`).innerHTML = " "
+        document.getElementById(`decoration2`).innerHTML = " "
+        document.getElementById(`decoration3`).innerHTML = " "
+        document.styleSheets[0].deleteRule(5)
+        document.styleSheets[0].deleteRule(4)
+        document.styleSheets[0].insertRule("body { font-family: Arial, sans-serif; margin: 40px; background-color: #ffffff; }", 4)
+      } else {
+        currentTheme = "Christmas"
+        document.getElementById(`themeswitcher`).innerHTML = "Theme: Christmas"
+        const snowflakes = document.getElementsByClassName("snowflake");
+        for (let i = 0; i < snowflakes.length; i++) {
+          snowflakes.item(i).innerHTML = "❄️"
+        }
+        document.getElementById(`decoration1`).innerHTML = "🎁"
+        document.getElementById(`decoration2`).innerHTML = "🎄"
+        document.getElementById(`decoration3`).innerHTML = "☃️"
+        document.styleSheets[0].insertRule("h1 { color: #c70039; }", 5)
+        document.styleSheets[0].deleteRule(4)
+        document.styleSheets[0].insertRule("body { font-family: Arial, sans-serif; margin: 40px; background-color: #fff8f0; }", 4)
+      }
+    });
+  </script>
 
   <script>
     // ========== STUDENT INSTRUCTIONS ==========
@@ -212,7 +283,7 @@ broad selectors -->
     // Clear Error Message
     errorMsg.textContent = "";
     // Clear Character Count
-    charCount.textContent = "0/10";
+    charCount.textContent = "Characters: 0/10";
     // ADDED REFOCUSING
     itemId.focus();
     //Landon Morrical: make the clear button clear any labels
