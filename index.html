@@ -43,6 +43,11 @@ broad selectors -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Label Generator MVP</title>
   <style>
+  #charCount {
+  	  color: black;
+ 	  font-weight: bold;
+    }
+	/*<!-- Used to bolden character tracker Carter Sailer -->*/
   #labelPreview {
       position: relative;
     }
@@ -80,7 +85,35 @@ broad selectors -->
       border-radius: 3px;
       cursor: pointer;
     }
-    button:hover { background-color: #00993b; }
+    /* Button effects - RB */
+    button:hover {
+      background-color: #00993b;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+    }
+    button:active {
+      transform: scale(0.95);
+    }
+    /* Ripple effect - RB */
+    button::after {
+      content: "";
+      position: absolute;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      width: 100px;
+      height: 100px;
+      top: 50%;
+      left: 50%;
+      pointer-events: none;
+      transform: translate(-50%, -50%) scale(0);
+      opacity: 0;
+      transition: transform 0.5s ease, opacity 0.8s ease;
+    }
+    button:active::after {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 1;
+      transition: 0s;
+    }
     #labelPreview {
       display: none;
       background: #fff;
@@ -119,6 +152,12 @@ broad selectors -->
   		font-size: 18px;
   		animation: snow 10s linear infinite;
 		}
+    /* EVAN BOWER - audio player */
+		.audio-player {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+    }
   </style>
 </head>
 <body>
@@ -129,9 +168,14 @@ broad selectors -->
   <!-- TODO 1: You may rename "Heat ID" below to something else for your own MVP scenario -->
   <label for="itemId"><strong>Enter 10-digit ID:</strong></label><br>
   <input type="text" id="itemId" maxlength="10" placeholder="e.g. 1234567890">
+  
+  <!-- ADDED CHARACTER COUNT Carter Sailer -->
+  <div id="charCount" style="font-size:14px; margin-top:4px;">Characters: 0/10</div>
+  
   <!-- EVAN BOWER - ADDED CLEAR BUTTON -->
   <button id="clearBtn">Clear</button>
   <div id="errorMsg" style="color:red; font-size:14px; margin-top:4px;"></div>
+
 
   <div id="labelPreview">
     <div class="label-header">
@@ -141,6 +185,12 @@ broad selectors -->
     <div id="labelData"></div>
     <button class="print-btn" onclick="window.print()">Print Label</button>
   </div>
+  
+  <!-- EVAN BOWER -> Background Music -->
+<audio controls autoplay="" class ="audio-player">
+    <source src="https://raw.githubusercontent.com/edbower-ai/christmas-music/d71a1b142fd33163e3db149092c135a150e3629f/soft-christmas-piano-438153.mp3" type="audio/mpeg">
+  </audio>
+  
   <!-- EVAN BOWER - decoration -->
   <!-- Landon Morrical - offset positions of snowflakes -->
   <div class="snowflake" style="left: 20%; top: -10%">❄️</div>
@@ -161,10 +211,14 @@ broad selectors -->
     itemId.value = "";
     // Clear Error Message
     errorMsg.textContent = "";
+    // Clear Character Count
+    charCount.textContent = "0/10";
     // ADDED REFOCUSING
     itemId.focus();
     //Landon Morrical: make the clear button clear any labels
     document.getElementById("labelPreview").style.display = "none";
+    // Jacob Diedrich: Field Highlight
+    idInput.style.backgroundColor = ''; // reset
     });
     
 
@@ -204,6 +258,8 @@ broad selectors -->
       } else {
         errorMsg.style.display = 'block';
         errorMsg.textContent = `No record found for ID ${id}`;
+        //Jacob Diedrich: Field Highlight
+        idInput.style.backgroundColor = 'yellow';
         preview.style.display = "none";
       }
 
@@ -216,11 +272,13 @@ broad selectors -->
     const spinner = document.getElementById('spinner');
     const labelPreview = document.querySelector('.label-preview, #label-preview, div[role="label-preview"]'); // fallback selector
     const preview = document.getElementById("labelPreview");
+    const charCount = document.getElementById('charCount');
 
     idInput.addEventListener('input', () => {
         const value = idInput.value.trim();
         const isValid = /^\d{10}$/.test(value);
-
+        charCount.textContent = `Characters: ${value.length}/10`;
+				// tracks number of character users has input Carter Sailer
         if (isValid) {
             errorMsg.style.display = 'none';
             errorMsg.textContent = '';
