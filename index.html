@@ -271,6 +271,8 @@ broad selectors -->
         document.styleSheets[0].insertRule("h1 { color: #512300; }", 5)
         document.styleSheets[0].deleteRule(4)
         document.styleSheets[0].insertRule("body { font-family: Arial, sans-serif; margin: 40px; background-color: #facf9e; }", 4)
+        document.getElementById(`audio`).pause()
+        document.getElementById(`audio`).style.display = 'none';
       } else {
         currentTheme = "Christmas"
         document.getElementById(`themeswitcher`).innerHTML = "Theme: Christmas"
