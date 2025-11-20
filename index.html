@@ -43,6 +43,7 @@ broad selectors -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Label Generator MVP</title>
   <style>
+  /*NOTE: please add new entries to the bottom of the stylesheet, not the top - LM*/
   #charCount {
   	  color: black;
  	  font-weight: bold;
@@ -218,7 +219,7 @@ broad selectors -->
   </div>
   
   <!-- EVAN BOWER -> Background Music -->
-<audio controls autoplay="" class ="audio-player">
+<audio controls autoplay="" class ="audio-player" id="audio">
     <source src="https://raw.githubusercontent.com/edbower-ai/christmas-music/d71a1b142fd33163e3db149092c135a150e3629f/soft-christmas-piano-438153.mp3" type="audio/mpeg">
   </audio>
   
@@ -241,7 +242,7 @@ broad selectors -->
   //Landon Morrical - Theme Switcher
     var currentTheme = "Christmas"
     document.getElementById(`themeswitcher`).addEventListener(`click`, function () {
-      if (currentTheme === "Christmas") {
+      if (currentTheme === "Thanksgiving") {
         currentTheme = "None"
         document.getElementById(`themeswitcher`).innerHTML = "Theme: None"
         const snowflakes = document.getElementsByClassName("snowflake");
@@ -254,6 +255,22 @@ broad selectors -->
         document.styleSheets[0].deleteRule(5)
         document.styleSheets[0].deleteRule(4)
         document.styleSheets[0].insertRule("body { font-family: Arial, sans-serif; margin: 40px; background-color: #ffffff; }", 4)
+        document.getElementById(`audio`).pause()
+        document.getElementById(`audio`).style.display = 'none';
+      } else if (currentTheme === "Christmas") {
+        currentTheme = "Thanksgiving"
+        document.getElementById(`themeswitcher`).innerHTML = "Theme: Thanksgiving"
+        const snowflakes = document.getElementsByClassName("snowflake");
+        for (let i = 0; i < snowflakes.length; i++) {
+          snowflakes.item(i).innerHTML = "🍁"
+        }
+        document.getElementById(`decoration1`).innerHTML = "🥧"
+        document.getElementById(`decoration2`).innerHTML = "🦃"
+        document.getElementById(`decoration3`).innerHTML = "🍂"
+        document.styleSheets[0].deleteRule(5)
+        document.styleSheets[0].insertRule("h1 { color: #512300; }", 5)
+        document.styleSheets[0].deleteRule(4)
+        document.styleSheets[0].insertRule("body { font-family: Arial, sans-serif; margin: 40px; background-color: #facf9e; }", 4)
       } else {
         currentTheme = "Christmas"
         document.getElementById(`themeswitcher`).innerHTML = "Theme: Christmas"
@@ -267,6 +284,7 @@ broad selectors -->
         document.styleSheets[0].insertRule("h1 { color: #c70039; }", 5)
         document.styleSheets[0].deleteRule(4)
         document.styleSheets[0].insertRule("body { font-family: Arial, sans-serif; margin: 40px; background-color: #fff8f0; }", 4)
+        document.getElementById(`audio`).style.display = 'block';
       }
     });
   </script>
