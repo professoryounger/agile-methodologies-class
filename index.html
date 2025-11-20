@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<!-- Shared by Prof Younger for the Agile Methodologies class -->
+
+<!-- Mark your territory with
+structured comments like 
+FEATURE: Color Picker by
+Sarah so everyone knows
+who owns what code and what it
+does. -->
+
+<!-- Communicate Through
+Inline Comments
+Ask questions or provide
+feedback directly in the code
+using comment syntax. This
+keeps context close to the work.
+Question unclear logic: //
+Why loop twice here?
+Suggest improvements: //
+Could we cache this?
+Flag issues: // This breaks
+on mobile -->
+
+<!-- Keep Everything Modular
+Write small, focused functions
+with limited scope. Scoped styles
+prevent cascade conflicts. Self-
+contained components make
+merging painless.
+One function = one clear
+responsibility
+Use unique class names or
+CSS-in-JS
+Avoid global variables and
+broad selectors -->
+
+
+
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Label Generator MVP</title>
+  <style>
+  #labelPreview {
+      position: relative;
+    }
+    .logo {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 80px;
+      filter: brightness(0%);
+    }
+    /*<--! Used for ONU logo (with 0 brightness) on label Carter Sailer -->*/
+  .emphasized-id {
+      font-size: 36px;
+      font-weight: bold;
+      color: #000;
+      margin-bottom: 10px;
+      display: block;
+    }
+    /*<!-- USED TO EMPHASIZE ID format Carter Sailer -->*/
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #fff8f0;
+    }
+    h1 { color: #c70039; }
+    input, button {
+      font-size: 16px;
+      padding: 6px 10px;
+      margin-top: 6px;
+    }
+    button {
+      background-color: #007b2f;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    button:hover { background-color: #00993b; }
+    #labelPreview {
+      display: none;
+      background: #fff;
+      border: 2px solid #004b8d;
+      margin-top: 20px;
+      padding: 20px;
+      width: 320px;
+      font-family: "Courier New", monospace;
+    }
+    .label-header {
+      text-align: center;
+      border-bottom: 1px solid #c70039;
+      margin-bottom: 10px;
+      padding-bottom: 5px;
+    }
+    .print-btn {
+      margin-top: 12px;
+      background-color: #007b2f;
+    }
+    .print-btn:hover { background-color: #00993b; }
+    @media print {
+      body * { visibility: hidden; }
+      #labelPreview, #labelPreview * { visibility: visible; }
+      #labelPreview { position: absolute; left: 0; top: 0; }
+      .print-btn { display: none; }
+    }
+    /* EVAN BOWER - snowflakes falling */
+    @keyframes snow {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(800px); }
+    }
+    .snowflake {
+  		position: absolute;
+  		top: -50px;
+  		color: #fff;
+  		font-size: 18px;
+  		animation: snow 10s linear infinite;
+		}
+  </style>
+</head>
+<body>
+
+  <h1>Label Generator MVP</h1>
+  <p><em>Enter a 10-digit ID to generate a label preview.  This starter app simulates a simple lookup system.</em></p>
+
+  <!-- TODO 1: You may rename "Heat ID" below to something else for your own MVP scenario -->
+  <label for="itemId"><strong>Enter 10-digit ID:</strong></label><br>
+  <input type="text" id="itemId" maxlength="10" placeholder="e.g. 1234567890">
+  <!-- EVAN BOWER - ADDED CLEAR BUTTON -->
+  <button id="clearBtn">Clear</button>
+  <div id="errorMsg" style="color:red; font-size:14px; margin-top:4px;"></div>
+
+  <div id="labelPreview">
+    <div class="label-header">
+      <!-- ADDED A COMPANY NAME AND YEAR TO LABEL Carter Sailer -->
+      <strong>ONU AGILE ID LABEL 2025</strong>
+    </div>
+    <div id="labelData"></div>
+    <button class="print-btn" onclick="window.print()">Print Label</button>
+  </div>
+  <!-- EVAN BOWER - decoration -->
+  <!-- Landon Morrical - offset positions of snowflakes -->
+  <div class="snowflake" style="left: 20%; top: -10%">❄️</div>
+	<div class="snowflake" style="left: 40%; top: -6%">❄️</div>
+  <div class="snowflake" style="left: 60%; top: -13%">❄️</div>
+  <div class="snowflake" style="left: 80%; top: -4%">❄️</div>
+	<div style="position: absolute; top: 10px; right: 10px; font-size: 24px;">🎁</div>
+	<div style="position: absolute; top: 10px; left: 10px; font-size: 24px;">🎄</div>
+
+  <script>
+    // ========== STUDENT INSTRUCTIONS ==========
+    // TODO 3: Edit the label fields below or add new ones (operator, lot, quantity, etc.)
+    // TODO 4: Try new ideas – auto-focus, inline error, confirmation message, etc.
+    // TODO 5: Replace the mock database with your own data or JSON file if you want.
+    
+    // EVAN BOWER - CLEAR BUTTON FUNCTIONALITY 
+    clearBtn.addEventListener("click", function () {
+    itemId.value = "";
+    // Clear Error Message
+    errorMsg.textContent = "";
+    // ADDED REFOCUSING
+    itemId.focus();
+    //Landon Morrical: make the clear button clear any labels
+    document.getElementById("labelPreview").style.display = "none";
+    });
+    
+
+    async function generateLabel() {
+      const id = document.getElementById("itemId").value.trim();
+      const preview = document.getElementById("labelPreview");
+      const dataDiv = document.getElementById("labelData");
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (id.length !== 10 || !/^\d+$/.test(id)) {
+        // This is the validation step – you can redesign how the user sees this feedback.
+        alert("Please enter a valid 10-digit numeric ID.");
+        return;
+      }
+
+      // Simulated "flat file" database lookup.
+      // (In a real system this would query a backend service.)
+      const db = {
+        "1234567890": { item: "ITEM-001", lot: "LOT-0023", qty: 100 },
+        "1112223334": { item: "ITEM-002", lot: "LOT-0041", qty: 250 },
+        "5556667778": { item: "ITEM-003", lot: "LOT-0068", qty: 175 }
+      };
+
+      const record = db[id];
+
+      if (record) {
+        dataDiv.innerHTML = `
+          <span class="emphasized-id">${id}</span>
+          <!-- NEW ID FORMAT IMPLEMENTED ABOVE Carter Sailer -->
+          <strong>Item:</strong> ${record.item}<br>
+          <strong>Lot:</strong> ${record.lot}<br>
+          <strong>Quantity:</strong> ${record.qty}
+          <img src="https://www.olivet.edu/wp-content/uploads/2023/08/Style-Guide-Webpage-LogoReversed-500x250.png" alt="Olivet Logo" class="logo">
+          <!-- ImportONU image from the web for logo on label Carter Sailer -->
+        `;
+        preview.style.display = "block";
+      } else {
+        errorMsg.style.display = 'block';
+        errorMsg.textContent = `No record found for ID ${id}`;
+        preview.style.display = "none";
+      }
+
+    }
+  </script>
+  
+  <script>
+    const idInput = document.querySelector('input[type="text"]');
+    const errorMsg = document.getElementById('errorMsg');
+    const spinner = document.getElementById('spinner');
+    const labelPreview = document.querySelector('.label-preview, #label-preview, div[role="label-preview"]'); // fallback selector
+    const preview = document.getElementById("labelPreview");
+
+    idInput.addEventListener('input', () => {
+        const value = idInput.value.trim();
+        const isValid = /^\d{10}$/.test(value);
+
+        if (isValid) {
+            errorMsg.style.display = 'none';
+            errorMsg.textContent = '';
+            //Jacob Diedrich: Added color to invalid input
+          	idInput.style.backgroundColor = ''; // reset
+            generateLabel()
+        } else {
+            preview.style.display = "none";
+            if (value.length >= 0 && value.length < 10) {
+                errorMsg.style.display = 'block';
+                errorMsg.textContent = 'ID must be 10 digits.';
+                idInput.style.backgroundColor = 'yellow'; // highlight
+            } else {
+                errorMsg.style.display = 'block';
+                errorMsg.textContent = `${value} is not a valid 10-digit numeric ID.`;
+                idInput.style.backgroundColor = 'yellow'; // highlight
+            }
+        }
+    });
+</script>
+</body>
+</html>
